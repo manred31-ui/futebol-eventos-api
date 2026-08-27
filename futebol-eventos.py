@@ -487,7 +487,8 @@ _LIMIARES_JANELA = {
 
 
 # (P4) helpers de design + CSS global -> ui_theme.py
-from ui_theme import _hr, inject_global_css  # noqa: E402
+from ui_theme import (  # noqa: E402
+    _hr, inject_global_css, blindar_elementos_duplicados, preparar_run)
 
 
 def main():
@@ -500,6 +501,11 @@ def main():
     # ═══════════════════════════════════════════════════════════════════
     # DESIGN SYSTEM — CSS global injetado uma vez por sessão
     # ═══════════════════════════════════════════════════════════════════
+    # Blindagem de UI: garante `key` única nos gráficos, senão dois iguais no
+    # mesmo run derrubam a página com StreamlitDuplicateElementId.
+    blindar_elementos_duplicados()
+    preparar_run()
+
     inject_global_css()
 
     # ── Modo Apresentação — CSS dinâmico ──────────────────────────────────

@@ -213,3 +213,52 @@ def _badge(pos: str) -> str:
     if any(k in _pos_l for k in ('atacante', 'forward', 'striker', 'winger', 'delantero')):
         return f'<span class="badge-pos badge-fwd">{pos}</span>'
     return f'<span class="badge-pos badge-gen">{pos}</span>'
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# Blindagem contra StreamlitDuplicateElementId
+# ══════════════════════════════════════════════════════════════════════════
+# O Streamlit gera o ID de um elemento a partir do TIPO + PARÂMETROS. Dois
+# gráficos iguais no mesmo run (o app tem 60+ `st.plotly_chart` sem `key`, e há
+# seções compartilhadas que renderizam em várias abas) colidem e derrubam a
+# PÁGINA INTEIRA com StreamlitDuplicateElementId — um crash de UI que nada tem a
+# ver com os dados do usuário.
+#
+# Em vez de depender de cada chamada lembrar de passar `key`, envolvemos
+# st.plotly_chart uma única vez: quando não vem `key`, atribuímos uma sequencial
+# por execução. A contagem vive no session_state (escopo da sessão, sem corrida
+# entre usuários) e é zerada a cada run por `preparar_run()`.
+import streamlit as _st_bl
+
+_CHAVE_SEQ = '_plt_seq_run'
+
+
+def preparar_run():
+    """Zera o contador de chaves automáticas. Chamar no início de cada run."""
+    try:
+        _st_bl.session_state[_CHAVE_SEQ] = 0
+    except Exception:
+        pass
+
+
+def blindar_elementos_duplicados():
+    """Faz `st.plotly_chart` gerar uma `key` única quando ela não é informada.
+
+    Idempotente: aplicar mais de uma vez não empilha wrappers.
+    """
+    _orig = getattr(_st_bl, 'plotly_chart', None)
+    if _orig is None or getattr(_orig, '_blindado', False):
+        return
+
+    def _wrap(*args, **kwargs):
+        if not kwargs.get('key'):
+            try:
+                _n = int(_st_bl.session_state.get(_CHAVE_SEQ, 0)) + 1
+                _st_bl.session_state[_CHAVE_SEQ] = _n
+                kwargs['key'] = f"_pltauto_{_n}"
+            except Exception:
+                pass                       # sem sessão (testes): segue sem key
+        return _orig(*args, **kwargs)
+
+    _wrap._blindado = True
+    _st_bl.plotly_chart = _wrap
