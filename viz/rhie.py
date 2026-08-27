@@ -172,4 +172,7 @@ def render_rhie_secao(dados_sensor, dados_posicao, hz, key_pref):
     _animar_esforco_campo(
         [_atl], _t_ini, _win, dados_posicao, _maps, "ações",
         _fmt_mmss(_b['frame_ini'] / hz), _fmt_mmss(_b['frame_fim'] / hz),
-        _b['n_total'], _per_lbl, min_atl=1)
+        _b['n_total'], _per_lbl, min_atl=1,
+        # key_pref é único por aba (Esforços/WCS/Janelas) — sem isto as três
+        # seções RHIE geram o mesmo ID de gráfico e o Streamlit derruba a página.
+        key=f"{key_pref}_rhie_campo")

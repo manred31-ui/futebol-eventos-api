@@ -4,6 +4,8 @@ Esforcos, WCS e Janelas (e pelo modulo RHIE). Contem os mapas de tempo dos
 periodos e o plot animado (play/pause) de um conjunto de atletas numa janela."""
 from __future__ import annotations
 
+import hashlib as _hashlib
+
 import applog as _applog
 from field import desenhar_campo_futebol_bonito
 from field import gps_para_campo_coords
@@ -83,7 +85,7 @@ def _periodo_label_de_t(maps, t_min):
 
 def _animar_esforco_campo(atletas, t_ini_min, window_minutes, dados_posicao,
                           maps, unidade, lbl_ini, lbl_fim, valor, per_lbl,
-                          campo_cfg=None, min_atl=1):
+                          campo_cfg=None, min_atl=1, key=None):
     """Anima no campo os `atletas` durante a janela [t_ini_min, +window_minutes]
     (em match-time). `maps` vem de _build_period_maps(). Extrai, para cada
     atleta, o segmento de GPS que cobre a janela (com fallback lats/lons →
@@ -227,7 +229,17 @@ def _animar_esforco_campo(atletas, t_ini_min, window_minutes, dados_posicao,
             x=0.0, y=-0.05, len=1.0, currentvalue=dict(visible=False))],
         legend=dict(orientation='h', yanchor='bottom', y=-0.30,
                     xanchor='center', x=0.5, font=dict(color='white', size=8)))
-    st.plotly_chart(_fig, use_container_width=True)
+    # `key` OBRIGATÓRIO na prática: esta função é compartilhada por várias
+    # seções (RHIE em Esforços/WCS/Janelas, esforços em Individual/Por Posição).
+    # Sem key, o Streamlit gera o ID pelo tipo+parâmetros e duas chamadas no
+    # mesmo run colidem → StreamlitDuplicateElementId derruba a página.
+    # Sem key explícita, deriva uma determinística do conteúdo (estável entre
+    # reruns, para o gráfico não piscar).
+    _k = key or ("campoanim_" + _hashlib.md5(
+        f"{lbl_ini}|{lbl_fim}|{per_lbl}|{unidade}|{valor}|"
+        f"{t_ini_min}|{window_minutes}|{','.join(map(str, _atls))}"
+        .encode('utf-8')).hexdigest()[:12])
+    st.plotly_chart(_fig, use_container_width=True, key=_k)
 
 
 def _tabela_e_anima_esforcos(eventos, atletas_anim, maps, dados_posicao,
@@ -269,4 +281,5 @@ def _tabela_e_anima_esforcos(eventos, atletas_anim, maps, dados_posicao,
         f"**{_ev['inicio']}→{_ev['fim']}** ({_per})")
     _animar_esforco_campo(
         atletas_anim, _tm_sel, window_minutes, dados_posicao, maps, unidade,
-        _ev['inicio'], _ev['fim'], _ev['valor'], _per, min_atl=min_atl)
+        _ev['inicio'], _ev['fim'], _ev['valor'], _per, min_atl=min_atl,
+        key=f"{key}_campo")
