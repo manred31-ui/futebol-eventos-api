@@ -232,9 +232,14 @@ def ocorrencias_acima_pct(sv, n_amostras, pct=0.90):
     O limiar é relativo ao próprio atleta (90% do seu pico), como pedido. Conta
     esforços distintos com o mesmo algoritmo guloso das abas WCS/Janelas: pega a
     maior janela, bloqueia todas que se sobrepõem a ela (separação mínima = a
-    própria janela) e repete. Sem isso, o passo de 10 s faria um único esforço
-    ser contado várias vezes (numa janela de 5 min, dezenas), inflando o número
-    por artefato de método.
+    própria janela) e repete.
+
+    A janela rolante tem passo de 1 AMOSTRA (0,1 s a 10 Hz — ver
+    `metrics.rolling_sum`). Sem a regra de não-sobreposição, um único esforço
+    apareceria em centenas de janelas consecutivas acima do limiar (ex.: um
+    trecho de 60 s no pico gera ~181 janelas de 1 min >= 90%), inflando a
+    contagem por puro artefato de método. Com a regra, esse trecho conta 1; um
+    trecho sustentado por 3x a duração da janela conta 3.
     """
     _n = int(n_amostras)
     if not sv or _n < 1 or len(sv) < _n:
