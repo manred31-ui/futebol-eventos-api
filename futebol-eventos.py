@@ -56,6 +56,7 @@ for _tentativa_import in (1, 2):
         import applog as _applog        # noqa: E402  (P3: logging estruturado)
         import state as _state          # noqa: E402  (P6: esquema de estado)
         import data_loader as _data_loader  # noqa: E402  (P9: pré-busca paralela)
+                import player_report as _player_report  # noqa: E402
         from catapult_api import _api_fetch, CatapultAPI  # noqa: E402,F401
         break
     except ImportError:
