@@ -1594,21 +1594,28 @@ Escolha um ou mais atletas para análise simultânea.
             _diag_log('Carga', f"{_warn_ld_n} atleta(s) sem dados de sensor "
                                "nesta atividade/períodos (excluídos das análises)")
                     # ── Preparar registros para Player GPS Report ───────────────
-        # No modifica las métricas ni las guarda todavía.
-        _hist_periodo = None
-
-        if periodos_selecionados:
-            _hist_periodo = periodos_selecionados[0]
-
-        _player_report_records = []
-
-        if _hist_periodo:
-            _player_report_records = _player_report.preparar_registros_de_periodo(
-                resultados_por_periodo=resultados_por_periodo,
-                periodo=_hist_periodo,
-                activity_id=activity_id,
-                match_name=_atividade_nome,
+               # ── Preparar registros GPS para historial ─────────────────────
+        # Si hay varios períodos seleccionados, guardar el partido completo.
+        if len(periodos_selecionados) > 1:
+            _hist_resultados = combinar_periodos(
+                {
+                    k: resultados_por_periodo[k]
+                    for k in periodos_selecionados
+                    if k in resultados_por_periodo
+                }
             )
+        elif periodos_selecionados:
+            _hist_resultados = resultados_por_periodo.get(
+                periodos_selecionados[0], []
+            )
+        else:
+            _hist_resultados = []
+
+        _player_report_records = _player_report.preparar_registros_partido(
+            resultados=_hist_resultados or [],
+            activity_id=activity_id,
+            match_name=_atividade_nome,
+        )
 
         st.session_state["_player_report_records"] = _player_report_records
                     # ── Guardar historial GPS del partido ───────────────────────
