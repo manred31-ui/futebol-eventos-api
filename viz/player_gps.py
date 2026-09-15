@@ -136,6 +136,36 @@ def render_player_gps(
     """Renderiza el informe individual Player GPS."""
 
     st.markdown("# 📋 PLAYER GPS REPORT")
+        jugadores = sorted(
+        {
+            str(registro.get("player_name", "")).strip()
+            for registro in historial
+            if str(registro.get("player_name", "")).strip()
+        }
+        | (
+            {str(current_record.get("player_name", "")).strip()}
+            if current_record
+            and str(current_record.get("player_name", "")).strip()
+            else set()
+        )
+    )
+
+    if jugadores:
+        jugador_inicial = player_name if player_name in jugadores else jugadores[0]
+        indice_inicial = jugadores.index(jugador_inicial)
+        player_name = st.selectbox(
+            "Jugador",
+            jugadores,
+            index=indice_inicial,
+            key="player_gps_selector",
+        )
+
+    if current_record is not None:
+        if (
+            str(current_record.get("player_name", "")).strip().lower()
+            != str(player_name).strip().lower()
+        ):
+            current_record = None
 
     if not player_name:
         st.info("Selecciona un jugador para ver su informe individual.")
