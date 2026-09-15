@@ -367,6 +367,7 @@ def render_player_gps(
                 {
                     "Fecha": registro.get("match_date") or "—",
                     "Partido": registro.get("match_name") or "—",
+                    "Min jugados": _numero(registro.get("duration_min")),
                     "m/min": _numero(registro.get("m_min")),
                     "Vel. máx.": _numero(
                         registro.get("max_velocity")
