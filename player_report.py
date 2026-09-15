@@ -208,3 +208,82 @@ def preparar_registro_partido(
     registro["record_key"] = generar_clave_registro(registro)
 
     return registro
+# ============================================================
+# PREPARAR TODOS LOS JUGADORES DE UN PARTIDO
+# ============================================================
+
+def preparar_registros_partido(
+    resultados: list[dict[str, Any]],
+    activity_id: str | int | None = None,
+    match_name: str | None = None,
+    match_date: str | None = None,
+    opponent: str | None = None,
+    player_ids: dict[str, str | int] | None = None,
+) -> list[dict[str, Any]]:
+    """
+    Convierte las métricas de todos los jugadores de un partido
+    en registros preparados para el historial.
+
+    No modifica los resultados originales.
+    No recalcula ninguna métrica.
+    """
+
+    registros = []
+
+    player_ids = player_ids or {}
+
+    for metricas in resultados:
+        player_name = metricas.get("Atleta")
+
+        player_id = None
+
+        if player_name:
+            player_id = player_ids.get(player_name)
+
+        registro = preparar_registro_partido(
+            metricas=metricas,
+            activity_id=activity_id,
+            match_name=match_name,
+            match_date=match_date,
+            opponent=opponent,
+            player_id=player_id,
+        )
+
+        if registro is not None:
+            registros.append(registro)
+
+    return registros
+
+
+# ============================================================
+# EXTRAER RESULTADOS DE UN PERÍODO
+# ============================================================
+
+def preparar_registros_de_periodo(
+    resultados_por_periodo: dict[str, list[dict[str, Any]]],
+    periodo: str,
+    activity_id: str | int | None = None,
+    match_name: str | None = None,
+    match_date: str | None = None,
+    opponent: str | None = None,
+    player_ids: dict[str, str | int] | None = None,
+) -> list[dict[str, Any]]:
+    """
+    Prepara los registros correspondientes a un período concreto.
+
+    Esto permite utilizar más adelante:
+    - Actividade Completa
+    - Períodos Combinados
+    - un período específico
+    """
+
+    resultados = resultados_por_periodo.get(periodo, [])
+
+    return preparar_registros_partido(
+        resultados=resultados,
+        activity_id=activity_id,
+        match_name=match_name,
+        match_date=match_date,
+        opponent=opponent,
+        player_ids=player_ids,
+    )
