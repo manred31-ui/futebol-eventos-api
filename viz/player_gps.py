@@ -229,6 +229,8 @@ def render_player_gps(
     ][-5:]
 
     st.markdown(f"## 👤 {actual.get('player_name', player_name)}")
+    posicion = actual.get("position") or "Posición no disponible"
+    st.caption(f"📍 {posicion}")
 
     fecha = actual.get("match_date") or "Fecha no disponible"
     partido = actual.get("match_name") or "Partido no identificado"
