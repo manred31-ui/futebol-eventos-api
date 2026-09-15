@@ -1592,6 +1592,24 @@ Escolha um ou mais atletas para análise simultânea.
         if _warn_ld_n > 0:
             _diag_log('Carga', f"{_warn_ld_n} atleta(s) sem dados de sensor "
                                "nesta atividade/períodos (excluídos das análises)")
+                    # ── Preparar registros para Player GPS Report ───────────────
+        # No modifica las métricas ni las guarda todavía.
+        _hist_periodo = None
+
+        if periodos_selecionados:
+            _hist_periodo = periodos_selecionados[0]
+
+        _player_report_records = []
+
+        if _hist_periodo:
+            _player_report_records = _player_report.preparar_registros_de_periodo(
+                resultados_por_periodo=resultados_por_periodo,
+                periodo=_hist_periodo,
+                activity_id=activity_id,
+                match_name=_atividade_nome,
+            )
+
+        st.session_state["_player_report_records"] = _player_report_records
         _per_label = ', '.join(periodos_selecionados)
         st.markdown(
             f"<div style='display:flex;align-items:center;gap:12px;padding:10px 16px;"
