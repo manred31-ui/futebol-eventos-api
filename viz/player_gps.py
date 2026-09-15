@@ -200,7 +200,7 @@ def render_player_gps(
 
     actual = current_record or registros[-1]
 
-       registros_partido = [
+    registros_partido = [
         registro
         for registro in registros
         if (
