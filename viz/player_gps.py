@@ -200,9 +200,21 @@ def render_player_gps(
 
     actual = current_record or registros[-1]
 
-    historico_anterior = [
+       registros_partido = [
         registro
         for registro in registros
+        if (
+            str(registro.get("session_type", "")).strip().lower() == "partido"
+            or (
+                not str(registro.get("session_type", "")).strip()
+                and not str(registro.get("match_name", "")).strip().lower().startswith("entrenamiento")
+            )
+        )
+    ]
+
+    historico_anterior = [
+        registro
+        for registro in registros_partido
         if registro.get("record_key") != actual.get("record_key")
     ][-5:]
 
