@@ -355,14 +355,14 @@ def render_player_gps(
 
     st.markdown("## 📈 TU EVOLUCIÓN")
 
-    if len(registros) < 2:
+    if len(registros_partido) < 2:
         st.info(
             "Todavía no hay suficientes partidos para mostrar una evolución."
         )
     else:
         evolucion = []
 
-        for registro in registros[-5:]:
+        for registro in registros_partido[-5:]:
             evolucion.append(
                 {
                     "Fecha": registro.get("match_date") or "—",
