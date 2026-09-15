@@ -128,49 +128,21 @@ def _es_participacion_corta(registro: dict[str, Any]) -> bool:
     return duracion < 20
 
 
+def render_player_gps(
+    player_name: str | None,
+    historial: list[dict[str, Any]],
+    current_record: dict[str, Any] | None = None,
+) -> None:
+    """Renderiza el informe individual Player GPS."""
+
     st.markdown("# 📋 PLAYER GPS REPORT")
 
-    nombres = []
-    for registro in historial:
-        nombre_historial = str(registro.get("player_name", "")).strip()
-        if nombre_historial and nombre_historial not in nombres:
-            nombres.append(nombre_historial)
-
-    if current_record is not None:
-        nombre_actual = str(
-            current_record.get("player_name", "")
-        ).strip()
-        if nombre_actual and nombre_actual not in nombres:
-            nombres.append(nombre_actual)
-
-    if not nombres:
+    if not player_name:
         st.info("Selecciona un jugador para ver su informe individual.")
         return
 
-    jugador_inicial = str(player_name or "").strip()
-
-    if jugador_inicial in nombres:
-        indice_inicial = nombres.index(jugador_inicial)
-    else:
-        indice_inicial = 0
-
-    jugador_seleccionado = st.selectbox(
-        "Selecciona el jugador",
-        nombres,
-        index=indice_inicial,
-        key="player_gps_selector",
-    )
-
-    player_name = jugador_seleccionado
-
-    if (
-        current_record is not None
-        and str(current_record.get("player_name", "")).strip()
-        != str(player_name).strip()
-    ):
-        current_record = None
-
     nombre = str(player_name).strip().lower()
+
     registros = [
         registro
         for registro in historial
@@ -181,15 +153,6 @@ def _es_participacion_corta(registro: dict[str, Any]) -> bool:
         registros = [
             registro
             for registro in registros
-            if registro.get("record_key") != current_record.get("record_key")
-        ]
-        registros.append(current_record)
-
-    if not registros:
-        st.warning(
-            f"No hay historial GPS disponible todavía para {player_name}."
-        )
-        return
             if registro.get("record_key") != current_record.get("record_key")
         ]
         registros.append(current_record)
