@@ -136,7 +136,7 @@ def render_player_gps(
     """Renderiza el informe individual Player GPS."""
 
     st.markdown("# 📋 PLAYER GPS REPORT")
-        jugadores = sorted(
+    jugadores = sorted(
         {
             str(registro.get("player_name", "")).strip()
             for registro in historial
