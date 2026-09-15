@@ -419,6 +419,7 @@ from viz.esforcos import render_esforcos  # noqa: E402
 # ══════════════════════════════════════════════════════════════════════════
 # (P4) render_monitoramento -> viz/monitoramento.py
 from viz.monitoramento import render_monitoramento  # noqa: E402
+from viz.player_gps import render_player_gps
 
 
 
@@ -1769,6 +1770,7 @@ Escolha um ou mais atletas para análise simultânea.
                 "📡 Ao Vivo",
                 "📤 Exportação para Artigo",
                 "📈 Monitoramento",
+                "📋 Player GPS",
             ])
 
             # ── Criar sub-tabs dentro de cada aba principal ────────────────────
@@ -1788,6 +1790,12 @@ Escolha um ou mais atletas para análise simultânea.
                                      api)
             with _main_tabs[5]:
                 render_monitoramento()
+with _main_tabs[6]:
+            render_player_gps(
+        player_name=st.session_state.atletas_sel[0] if st.session_state.atletas_sel else None,
+        historial=_player_history.cargar_historial(),
+        current_record=next((r for r in _player_report_records if r.get("player_name") == st.session_state.atletas_sel[0]), None) if st.session_state.atletas_sel and _player_report_records else None,
+    )
 
             # Mapeamento: abas[N] aponta para o container correto na nova estrutura
             abas = [
