@@ -1611,6 +1611,13 @@ Escolha um ou mais atletas para análise simultânea.
             )
 
         st.session_state["_player_report_records"] = _player_report_records
+                    # ── Guardar historial GPS del partido ───────────────────────
+        # Usa record_key para evitar duplicados si Streamlit se ejecuta
+        # nuevamente o si el mismo partido se vuelve a cargar.
+        if _player_report_records:
+            _player_history.guardar_registros_partido(
+                _player_report_records
+            )
         _per_label = ', '.join(periodos_selecionados)
         st.markdown(
             f"<div style='display:flex;align-items:center;gap:12px;padding:10px 16px;"
