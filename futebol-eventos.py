@@ -1625,8 +1625,9 @@ Escolha um ou mais atletas para análise simultânea.
             _player_history.guardar_registros_partido(
                 _player_report_records
             )
-        _player_history_count = _player_history.contar_registros()
-        st.caption(f"Historial GPS guardado: {_player_history_count} registros")
+                _player_history_count = _player_history.contar_registros()
+        _persist_efemera = st.session_state.get("_persist_efemera", False)
+        st.info(f"📊 HISTORIAL GPS: {_player_history_count} registros | {'⚠️ temporal' if _persist_efemera else '✅ persistente'}")
         _per_label = ', '.join(periodos_selecionados)
         st.markdown(
             f"<div style='display:flex;align-items:center;gap:12px;padding:10px 16px;"
