@@ -82,6 +82,7 @@ def normalizar_metricas_jugador(
         "player_name": metricas.get("Atleta"),
         "activity_id": activity_id,
         "match_name": match_name,
+        "session_type": "entrenamiento" if str(match_name or "").strip().lower().startswith("entrenamiento") else "partido",
         "match_date": match_date,
         "opponent": opponent,
 
