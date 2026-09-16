@@ -1,5 +1,8 @@
 
 from __future__ import annotations
+from player_gps_pdf import generar_pdf_player_gps
+
+from typing import Any
 
 from typing import Any
 
@@ -473,18 +476,19 @@ def render_player_gps(
 
     st.markdown("## 🎯 TU FOCO")
 
-    focos = []
+        pdf_bytes = generar_pdf_player_gps(
+        actual=actual,
+        registros_partido=registros_partido,
+        nombre=nombre_mostrar,
+        posicion=posicion,
+    )
 
-    for clave, titulo, unidad in METRICAS:
-        referencia = _referencia_historica(
-            historico_anterior,
-            clave,
-        )
-        actual_valor = _numero(actual.get(clave))
-        base = _numero(referencia)
-
-        if actual_valor is None or base is None or base == 0:
-            continue
+    st.download_button(
+        "📄 Descargar informe PDF",
+        data=pdf_bytes,
+        file_name=f"PLAYER_GPS_{nombre_mostrar}.pdf",
+        mime="application/pdf",
+    )
 
         diferencia = actual_valor / base
 
