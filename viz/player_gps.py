@@ -308,7 +308,7 @@ def render_player_gps(
 
     st.markdown("### Tus 8 métricas")
 
-        metricas_cards = []
+    metricas_cards = []
 
     for clave, titulo, unidad in METRICAS:
         valor = actual.get(clave)
