@@ -308,7 +308,7 @@ def render_player_gps(
 
     st.markdown("### Tus 8 métricas")
 
-    filas = []
+        metricas_cards = []
 
     for clave, titulo, unidad in METRICAS:
         valor = actual.get(clave)
@@ -317,38 +317,86 @@ def render_player_gps(
             clave,
         )
 
-        if clave in ("max_velocity", "m_min"):
-            decimales = 1
-        else:
-            decimales = 0
+        decimales = 1 if clave in ("max_velocity", "m_min") else 0
 
         valor_texto = _formato(valor, decimales)
-
         if unidad:
             valor_texto += f" {unidad}"
 
-        filas.append(
-            {
-                "Métrica": titulo,
-                "Tu partido": valor_texto,
-                "Tu referencia": (
-                    _formato(referencia, decimales)
-                    if referencia is not None
-                    else "—"
-                ),
-                "Lectura": _estado_individual(valor, referencia),
-                "Comparación": _comparacion_texto(
-                    valor,
-                    referencia,
-                ),
-            }
+        estado = _estado_individual(valor, referencia)
+        comparacion = _comparacion_texto(valor, referencia)
+
+        referencia_texto = (
+            _formato(referencia, decimales)
+            if referencia is not None
+            else "—"
         )
 
-    st.dataframe(
-        pd.DataFrame(filas),
-        use_container_width=True,
-        hide_index=True,
-    )
+        if unidad and referencia is not None:
+            referencia_texto += f" {unidad}"
+
+        metricas_cards.append(
+            (
+                titulo,
+                valor_texto,
+                referencia_texto,
+                estado,
+                comparacion,
+            )
+        )
+
+    for inicio in range(0, len(metricas_cards), 4):
+        columnas = st.columns(4)
+
+        for columna, tarjeta in zip(
+            columnas,
+            metricas_cards[inicio:inicio + 4],
+        ):
+            titulo, valor, referencia, estado, comparacion = tarjeta
+
+            with columna:
+                st.markdown(
+                    f"""
+                    <div style="
+                        padding: 16px;
+                        border: 1px solid rgba(255,255,255,0.12);
+                        border-radius: 14px;
+                        margin-bottom: 16px;
+                        min-height: 145px;
+                    ">
+                        <div style="
+                            font-size: 0.85rem;
+                            font-weight: 600;
+                            opacity: 0.75;
+                        ">
+                            {titulo}
+                        </div>
+                        <div style="
+                            font-size: 1.65rem;
+                            font-weight: 700;
+                            margin-top: 8px;
+                        ">
+                            {valor}
+                        </div>
+                        <div style="
+                            font-size: 0.8rem;
+                            opacity: 0.7;
+                            margin-top: 8px;
+                        ">
+                            Referencia: {referencia}
+                        </div>
+                        <div style="
+                            font-size: 0.85rem;
+                            margin-top: 8px;
+                        ">
+                            {estado} {comparacion}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+   
 
     # ============================================================
     # TUS HITOS
