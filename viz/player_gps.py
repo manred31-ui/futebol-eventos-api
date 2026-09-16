@@ -208,7 +208,31 @@ def render_player_gps(
     else 999,
 )
 
-    actual = current_record or registros[-1]
+    actual = (
+    current_record
+    if current_record is not None
+    and (
+        str(current_record.get("session_type", "")).strip().lower() == "partido"
+        or (
+            not str(current_record.get("session_type", "")).strip()
+            and not str(current_record.get("match_name", "")).strip().lower().startswith("entrenamiento")
+        )
+    )
+    else next(
+        (
+            registro
+            for registro in reversed(registros)
+            if (
+                str(registro.get("session_type", "")).strip().lower() == "partido"
+                or (
+                    not str(registro.get("session_type", "")).strip()
+                    and not str(registro.get("match_name", "")).strip().lower().startswith("entrenamiento")
+                )
+            )
+        ),
+        registros[-1],
+    )
+)
 
     registros_partido = [
         registro
