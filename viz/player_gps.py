@@ -1,8 +1,4 @@
-
 from __future__ import annotations
-from player_gps_pdf import generar_pdf_player_gps
-
-from typing import Any
 
 from typing import Any
 
@@ -197,7 +193,21 @@ def render_player_gps(
         )
         return
 
-    registros = sorted(registros, key=lambda registro: int(__import__("re").search(r"Fecha\s+(\d+)", str(registro.get("match_name") or "")).group(1)) if __import__("re").search(r"Fecha\s+(\d+)", str(registro.get("match_name") or "")) else 999)
+    registros = sorted(
+    registros,
+    key=lambda registro: int(
+        __import__("re").search(
+            r"Fecha\s+(\d+)",
+            str(registro.get("match_name") or ""),
+        ).group(1)
+    )
+    if __import__("re").search(
+        r"Fecha\s+(\d+)",
+        str(registro.get("match_name") or ""),
+    )
+    else 999,
+)
+
     actual = (
     current_record
     if current_record is not None
@@ -476,24 +486,18 @@ def render_player_gps(
 
     st.markdown("## 🎯 TU FOCO")
 
-            pdf_bytes = generar_pdf_player_gps(
-        actual=actual,
-        registros_partido=registros_partido,
-        nombre=nombre_mostrar,
-        posicion=posicion,
-    )
+    focos = []
 
-    st.download_button(
-        "📄 Descargar informe PDF",
-        data=pdf_bytes,
-        file_name=f"PLAYER_GPS_{nombre_mostrar}.pdf",
-        mime="application/pdf",
-    )
-        "📄 Descargar informe PDF",
-        data=pdf_bytes,
-        file_name=f"PLAYER_GPS_{nombre_mostrar}.pdf",
-        mime="application/pdf",
-    )
+    for clave, titulo, unidad in METRICAS:
+        referencia = _referencia_historica(
+            historico_anterior,
+            clave,
+        )
+        actual_valor = _numero(actual.get(clave))
+        base = _numero(referencia)
+
+        if actual_valor is None or base is None or base == 0:
+            continue
 
         diferencia = actual_valor / base
 
@@ -516,17 +520,4 @@ def render_player_gps(
         "La comparación se realiza principalmente contra tu propio historial. "
         "Las desaceleraciones representan exposición de carga y no se "
         "interpretan automáticamente como algo bueno o malo."
-    )
-     
-        pdf_bytes = generar_pdf_player_gps(
-        actual=actual,
-        registros_partido=registros_partido,
-        nombre=nombre_mostrar,
-        posicion=posicion,
-    )
-    st.download_button(
-        "📄 Descargar informe PDF",
-        data=pdf_bytes,
-        file_name=f"PLAYER_GPS_{nombre_mostrar}.pdf",
-        mime="application/pdf",
     )
