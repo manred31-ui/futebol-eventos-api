@@ -194,21 +194,7 @@ def render_player_gps(
         )
         return
 
-       registros = sorted(
-        registros,
-        key=lambda registro: int(
-            __import__("re").search(
-                r"Fecha\s+(\d+)",
-                str(registro.get("match_name") or ""),
-            ).group(1)
-        )
-        if __import__("re").search(
-            r"Fecha\s+(\d+)",
-            str(registro.get("match_name") or ""),
-        )
-        else 999,
-    )
-
+    registros = sorted(registros, key=lambda registro: int(__import__("re").search(r"Fecha\s+(\d+)", str(registro.get("match_name") or "")).group(1)) if __import__("re").search(r"Fecha\s+(\d+)", str(registro.get("match_name") or "")) else 999)
     actual = (
     current_record
     if current_record is not None
