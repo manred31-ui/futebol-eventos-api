@@ -521,3 +521,16 @@ def render_player_gps(
         "Las desaceleraciones representan exposición de carga y no se "
         "interpretan automáticamente como algo bueno o malo."
     )
+    pdf_bytes = generar_pdf_player_gps(
+        actual=actual,
+        registros_partido=registros_partido,
+        nombre=nombre_mostrar,
+        posicion=posicion,
+    )
+
+    st.download_button(
+        "📄 Descargar informe PDF",
+        data=pdf_bytes,
+        file_name=f"PLAYER_GPS_{nombre_mostrar}.pdf",
+        mime="application/pdf",
+    )
