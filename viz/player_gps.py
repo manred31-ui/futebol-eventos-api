@@ -236,9 +236,8 @@ def render_player_gps(
     rival = actual.get("opponent") or ""
 
 
-    st.markdown(f"## ⚽ {nombre_mostrar}")
-    st.markdown(f"**{posicion}**")
-
+    st.markdown(f"# ⚽ {nombre_mostrar}")
+    st.markdown(f"### {posicion}")
     info_partido = f"**{fecha}** · {partido}"
     if rival:
         info_partido += f" · vs {rival}"
