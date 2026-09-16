@@ -408,7 +408,7 @@ def render_player_gps(
     sprint = _numero(actual.get("sprint_distance"))
     hsd = _numero(actual.get("high_speed_distance"))
     mmin = _numero(actual.get("m_min"))
-
+    max_vel = _numero(actual.get("max_velocity"))
     hitos = []
 
 if max_vel is not None:
