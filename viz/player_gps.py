@@ -408,89 +408,34 @@ def render_player_gps(
     sprint = _numero(actual.get("sprint_distance"))
     hsd = _numero(actual.get("high_speed_distance"))
     mmin = _numero(actual.get("m_min"))
-  
+
     hitos = []
 
-if max_vel is not None:
-    hitos.append(
-        (
-            "🚀",
-            "Velocidad máxima",
-            f"{_formato(max_vel, 1)} km/h",
+    if max_vel is not None:
+        hitos.append(
+            f"Velocidad máxima: **{_formato(max_vel, 1)} km/h**"
         )
-    )
 
-if mmin is not None:
-    hitos.append(
-        (
-            "⚡",
-            "Intensidad",
-            f"{_formato(mmin, 1)} m/min",
+    if sprint is not None:
+        hitos.append(
+            f"Sprint >25 km/h: **{_formato(sprint)} m**"
         )
-    )
 
-if hsd is not None and hsd > 0:
-    hitos.append(
-        (
-            "🏃",
-            "Alta velocidad",
-            f"{_formato(hsd)} m",
+    if hsd is not None:
+        hitos.append(
+            f"Alta velocidad: **{_formato(hsd)} m**"
         )
-    )
 
-if sprint is not None and sprint > 0:
-    hitos.append(
-        (
-            "💨",
-            "Sprint >25 km/h",
-            f"{_formato(sprint)} m",
+    if mmin is not None:
+        hitos.append(
+            f"Intensidad: **{_formato(mmin, 1)} m/min**"
         )
-    )
 
-if hitos:
-    for inicio in range(0, len(hitos), 3):
-        columnas = st.columns(3)
-
-        for columna, hito in zip(
-            columnas,
-            hitos[inicio:inicio + 3],
-        ):
-            icono, titulo, valor = hito
-
-            with columna:
-                st.markdown(
-                    f"""
-                    <div style="
-                        padding: 18px;
-                        border: 1px solid rgba(255,255,255,0.12);
-                        border-radius: 14px;
-                        margin-bottom: 16px;
-                        min-height: 120px;
-                    ">
-                        <div style="font-size: 1.5rem;">
-                            {icono}
-                        </div>
-                        <div style="
-                            font-size: 0.85rem;
-                            font-weight: 600;
-                            opacity: 0.75;
-                            margin-top: 6px;
-                        ">
-                            {titulo}
-                        </div>
-                        <div style="
-                            font-size: 1.45rem;
-                            font-weight: 700;
-                            margin-top: 8px;
-                        ">
-                            {valor}
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-else:
-    st.info("No hay datos suficientes para destacar hitos.")
+    if hitos:
+        for hito in hitos:
+            st.write(f"• {hito}")
+    else:
+        st.info("No hay datos suficientes para destacar hitos.")
 
     # ============================================================
     # TU EVOLUCIÓN
