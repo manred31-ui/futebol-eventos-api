@@ -228,7 +228,7 @@ def render_player_gps(
         if registro.get("record_key") != actual.get("record_key")
     ][-5:]
 
-    nombre_mostrar = actual.get("player_name", player_name)
+nombre_mostrar = actual.get("player_name", player_name)
 posicion = actual.get("position") or "Posición no disponible"
 minutos = _numero(actual.get("duration_min"))
 fecha = actual.get("match_date") or "Fecha no disponible"
@@ -244,11 +244,11 @@ if rival:
     info_partido += f" · vs {rival}"
 
 if minutos is not None:
-    info_partido += f" · **{_formato(minutos)} min**"
+        info_partido += f" · **{_formato(minutos)} min**"
 
 st.caption(info_partido)
 
-    if _es_participacion_corta(actual):
+if _es_participacion_corta(actual):
         st.warning(
             "⚠️ Participación corta: la lectura de este partido debe "
             "tomarse con cautela."
