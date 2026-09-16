@@ -1,4 +1,3 @@
-from player_gps_pdf import generar_pdf_player_gps
 from __future__ import annotations
 
 from typing import Any
