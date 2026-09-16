@@ -476,7 +476,7 @@ def render_player_gps(
 
     st.markdown("## 🎯 TU FOCO")
 
-        pdf_bytes = generar_pdf_player_gps(
+            pdf_bytes = generar_pdf_player_gps(
         actual=actual,
         registros_partido=registros_partido,
         nombre=nombre_mostrar,
@@ -484,6 +484,11 @@ def render_player_gps(
     )
 
     st.download_button(
+        "📄 Descargar informe PDF",
+        data=pdf_bytes,
+        file_name=f"PLAYER_GPS_{nombre_mostrar}.pdf",
+        mime="application/pdf",
+    )
         "📄 Descargar informe PDF",
         data=pdf_bytes,
         file_name=f"PLAYER_GPS_{nombre_mostrar}.pdf",
