@@ -228,25 +228,25 @@ def render_player_gps(
         if registro.get("record_key") != actual.get("record_key")
     ][-5:]
 
-nombre_mostrar = actual.get("player_name", player_name)
-posicion = actual.get("position") or "Posición no disponible"
-minutos = _numero(actual.get("duration_min"))
-fecha = actual.get("match_date") or "Fecha no disponible"
-partido = actual.get("match_name") or "Partido no identificado"
-rival = actual.get("opponent") or ""
+    nombre_mostrar = actual.get("player_name", player_name)
+    posicion = actual.get("position") or "Posición no disponible"
+    minutos = _numero(actual.get("duration_min"))
+    fecha = actual.get("match_date") or "Fecha no disponible"
+    partido = actual.get("match_name") or "Partido no identificado"
+    rival = actual.get("opponent") or ""
 
 
-st.markdown(f"## ⚽ {nombre_mostrar}")
-st.markdown(f"**{posicion}**")
+    st.markdown(f"## ⚽ {nombre_mostrar}")
+    st.markdown(f"**{posicion}**")
 
-info_partido = f"**{fecha}** · {partido}"
-if rival:
-    info_partido += f" · vs {rival}"
+    info_partido = f"**{fecha}** · {partido}"
+    if rival:
+        info_partido += f" · vs {rival}"
 
-if minutos is not None:
+    if minutos is not None:
         info_partido += f" · **{_formato(minutos)} min**"
 
-st.caption(info_partido)
+    st.caption(info_partido)
 
 if _es_participacion_corta(actual):
         st.warning(
