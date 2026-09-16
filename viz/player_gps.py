@@ -248,7 +248,7 @@ def render_player_gps(
 
     st.caption(info_partido)
 
-if _es_participacion_corta(actual):
+    if _es_participacion_corta(actual):
         st.warning(
             "⚠️ Participación corta: la lectura de este partido debe "
             "tomarse con cautela."
